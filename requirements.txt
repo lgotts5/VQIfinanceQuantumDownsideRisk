@@ -1,0 +1,11 @@
+numpy
+pandas
+scikit-learn
+matplotlib
+pyyaml
+openpyxl
+yfinance
+qiskit
+qiskit-machine-learning
+# Pin exact versions once everyone has a working install:
+#   pip freeze > requirements.txt

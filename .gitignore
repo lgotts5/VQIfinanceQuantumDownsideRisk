@@ -1,0 +1,15 @@
+# Data pulled by code (rebuildable, so not committed)
+data/raw/
+data/processed/
+results/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Secrets and system files
+.env
+.DS_Store
+~$*.xlsx

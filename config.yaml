@@ -1,0 +1,30 @@
+# Central settings. Change decisions here, not inside the code.
+# Placeholder values below are pending team decisions (see Start Here tab).
+
+tickers: [IONQ, RGTI, QBTS, QUBT]
+
+benchmarks:
+  market: SPY
+  semiconductors: SMH
+  small_cap_growth: IWO
+
+start_date: "2021-01-01"
+end_date: null            # null means today
+
+label:
+  horizon_days: 30        # trading days
+  drop_threshold: 0.20    # 0.20 means a 20% decline
+  rule: end_of_window     # end_of_window or any_point
+
+# FRED series IDs (no API key needed)
+macro_series:
+  fed_funds: DFF
+  ten_year_yield: DGS10
+  vix: VIXCLS
+  high_yield_spread: BAMLH0A0HYM2
+
+business_sheet: data/business/business_data.xlsx
+
+evaluation:
+  n_splits: 4
+  quantum_features: 4     # qubits used by the quantum models
