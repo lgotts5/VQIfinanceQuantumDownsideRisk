@@ -1,30 +1,17 @@
-"""Quantum classifiers. Same fit() and predict_proba() interface as classical.py.
-
-Each feature becomes one qubit, so inputs are reduced with PCA first.
-Runs on a local simulator by default.
-"""
-
-import numpy as np
-from sklearn.decomposition import PCA
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-
-
-def get_quantum_models(quantum_features=4):
-    from qiskit.circuit.library import ZZFeatureMap
-    from qiskit_machine_learning.algorithms import QSVC
-    from qiskit_machine_learning.kernels import FidelityQuantumKernel
-
-    feature_map = ZZFeatureMap(feature_dimension=quantum_features, reps=2)
-    kernel = FidelityQuantumKernel(feature_map=feature_map)
-
-    return {
-        "qsvc": make_pipeline(
-            StandardScaler(),
-            PCA(n_components=quantum_features),
-            MinMaxScaler(feature_range=(0, np.pi)),  # scale to rotation angles
-            QSVC(quantum_kernel=kernel, probability=True,
-                 class_weight="balanced")),
-    }
-
-# TODO: add the variational quantum classifier (VQC) once QSVC results are in.
+# quantum.py
+# Quantum machine learning models built with Qiskit.
+#
+# What this file needs to do:
+# 1. Reduce features to a small number (around 4 to 8), since each
+#    feature typically becomes one qubit. Use PCA or feature selection.
+# 2. Scale the reduced features to rotation angles (for example 0 to pi).
+# 3. Build a quantum support vector classifier (QSVC) using a feature map
+#    like ZZFeatureMap and a FidelityQuantumKernel. Build this one first.
+# 4. Later, build a variational quantum classifier (VQC): a feature map plus
+#    a trainable circuit like RealAmplitudes, trained with an optimizer.
+# 5. Run on a local simulator first. Real hardware comes later, if at all.
+#
+# Models need the same fit() and predict_proba() interface as classical.py.
+# Quantum models are slow, so expect to subsample the data at first.
+#
+# Suggested function: get_quantum_models, returning a dict of name to model
