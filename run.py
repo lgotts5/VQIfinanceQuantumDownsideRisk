@@ -1,41 +1,15 @@
-"""Runs the pipeline end to end: python run.py"""
-
-from src.classical import get_classical_models
-from src.data import get_prices, load_business_sheet, load_config
-from src.evaluate import run_model
-from src.prepare import build_dataset, make_labels, make_market_features
-
-
-def main():
-    cfg = load_config()
-    lab = cfg["label"]
-
-    print("1. Pulling prices")
-    close, volume = get_prices(cfg["tickers"], cfg["start_date"], cfg["end_date"])
-
-    print("2. Loading business sheet")
-    load_business_sheet(cfg["business_sheet"])
-
-    print("3. Building labels and features")
-    labels = make_labels(close, lab["horizon_days"], lab["drop_threshold"], lab["rule"])
-    data = build_dataset(make_market_features(close, volume), labels)
-
-    print("\nSanity check: decline events per company")
-    summary = data.groupby("ticker")["label"].agg(rows="count", events="sum")
-    print(summary.astype(int), "\n")
-
-    print("4. Classical baselines on market-only features")
-    ev = cfg["evaluation"]
-    for name, model in get_classical_models(ev["quantum_features"]).items():
-        results = run_model(model, data, ev["n_splits"], lab["horizon_days"])
-        print(f"\n{name}")
-        print(results.round(3).to_string(index=False) if len(results) else "  no valid folds")
-
-    # Quantum models are slower. Uncomment once classical results look sensible.
-    # from src.quantum import get_quantum_models
-    # for name, model in get_quantum_models(ev["quantum_features"]).items():
-    #     print(name, run_model(model, data, ev["n_splits"], lab["horizon_days"]))
-
-
-if __name__ == "__main__":
-    main()
+# run.py
+# Runs the whole pipeline in order with one command: python run.py
+#
+# What this file needs to do:
+# 1. Load config.yaml.
+# 2. Pull prices and macro data, and load the business sheet (data.py).
+# 3. Build labels and features (prepare.py).
+# 4. Print a sanity check: rows and decline events per company.
+#    If a company has almost no declines, flag it.
+# 5. Run the classical models through evaluate.py and print results.
+# 6. Run the quantum models the same way, once classical results look sensible.
+# 7. Save results and charts to a results/ folder.
+#
+# Keep this file short. It should only call functions from src/,
+# not contain any real logic itself.
